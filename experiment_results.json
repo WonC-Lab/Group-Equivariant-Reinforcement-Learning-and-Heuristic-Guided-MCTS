@@ -1,0 +1,58 @@
+{
+    "ablation": {
+        "full_success_rate": 0.0,
+        "no_equi_success_rate": 0.0,
+        "no_guide_success_rate": 0.0,
+        "no_mcts_success_rate": 0.0
+    },
+    "generalization": {
+        "equivariant": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
+        "std_aug": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ],
+        "standard": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "safety": {
+        "guided_collisions": 7,
+        "unguided_collisions": 17
+    },
+    "sample_efficiency": {
+        "equivariant_episodes": 40,
+        "equivariant_success": 0.0,
+        "std_aug_success": 0.0,
+        "std_success": 0.0
+    },
+    "sensitivity": {
+        "n5_time_per_ep": 0.15446457862854004,
+        "n15_time_per_ep": 0.7304817318916321,
+        "n30_time_per_ep": 1.222850149869919,
+        "n5_success": 0.0,
+        "n15_success": 0.0,
+        "n30_success": 0.0
+    }
+}
