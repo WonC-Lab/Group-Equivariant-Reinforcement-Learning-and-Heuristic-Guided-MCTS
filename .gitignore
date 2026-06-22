@@ -1,5 +1,5 @@
-# Exclude LaTeX paper files
-*.tex
+# Exclude LaTeX paper compilation files but track .tex source
+# *.tex
 *.pdf
 *.aux
 *.log

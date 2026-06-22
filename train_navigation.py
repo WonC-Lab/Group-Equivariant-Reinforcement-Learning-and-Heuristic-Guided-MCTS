@@ -87,7 +87,7 @@ def train_agent():
     base_env = AutonomousNavigationEnv(size=13)
     env = SymmetricNavEnvAdapter(base_env)
     
-    model = D4EquivariantNet(board_size=13, in_channels=3, num_filters=32, num_layers=2)
+    model = D4EquivariantNet(board_size=13, in_channels=3, num_filters=32, num_layers=6)
     optimizer = optim.Adam(model.parameters(), lr=0.001)
     
     mcts = ActorCriticMCTS(model=model, c_puct=1.4)
@@ -152,24 +152,27 @@ def train_agent():
 
         if episode_states:
             model.train()
-            optimizer.zero_grad()
 
             batch_states = torch.cat(episode_states, dim=0)
             batch_actions = torch.tensor(episode_actions, dtype=torch.long)
             batch_returns = torch.tensor(returns, dtype=torch.float32)
             batch_heuristics = torch.tensor(np.array(episode_heuristics), dtype=torch.float32)
 
-            logits, values = model(batch_states)
-
-            loss, rl_loss_val, kl_loss_val = loss_fn(
-                logits, batch_actions, batch_returns, batch_heuristics
-            )
-
-            loss.backward()
-            optimizer.step()
+            avg_loss = 0.0
+            for _ in range(5):
+                optimizer.zero_grad()
+                logits, values = model(batch_states)
+                loss, rl_loss_val, kl_loss_val, val_loss_val = loss_fn(
+                    logits, values, batch_actions, batch_returns, batch_heuristics
+                )
+                loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+                optimizer.step()
+                avg_loss += loss.item()
+            avg_loss /= 5.0
             loss_fn.decay_beta()
 
-            print(f"Episode {ep:02d}/{num_episodes} | Steps: {step:02d} | Result: {result_str:<32} | Loss: {loss.item():.4f} | Beta: {loss_fn.beta:.4f}")
+            print(f"Episode {ep:02d}/{num_episodes} | Steps: {step:02d} | Result: {result_str:<32} | Loss: {avg_loss:.4f} | Beta: {loss_fn.beta:.4f}")
         else:
             print(f"Episode {ep:02d}/{num_episodes} | Steps: {step:02d} | Result: Empty Episode")
 

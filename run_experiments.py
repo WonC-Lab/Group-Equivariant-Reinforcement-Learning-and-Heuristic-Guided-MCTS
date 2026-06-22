@@ -39,7 +39,7 @@ def train_config(
     use_mcts=True,
     beta_start=1.0,
     beta_decay=0.95,
-    num_episodes=40,
+    num_episodes=200,
     num_searches=15,
     max_steps=20,
     data_augmentation=False
@@ -49,11 +49,11 @@ def train_config(
     base_env = AutonomousNavigationEnv(size=13)
     env = SymmetricNavEnvAdapter(base_env)
     
-    # Initialize appropriate network
+    # Initialize appropriate network with 6 layers to cover the 13x13 grid board
     if model_type == 'equivariant':
-        model = D4EquivariantNet(board_size=13, in_channels=3, num_filters=16, num_layers=2)
+        model = D4EquivariantNet(board_size=13, in_channels=3, num_filters=16, num_layers=6)
     else:
-        model = StandardCNN(board_size=13, in_channels=3, num_filters=16, num_layers=2)
+        model = StandardCNN(board_size=13, in_channels=3, num_filters=16, num_layers=6)
         
     optimizer = optim.Adam(model.parameters(), lr=0.002)
     
@@ -88,7 +88,7 @@ def train_config(
         while not game_over and step < max_steps:
             if use_mcts:
                 actions, probs = mcts.get_action_probabilities(
-                    state, current_turn=1, game_env=env, num_searches=num_searches, temp=1.0
+                    state, current_turn=1, game_env=env, num_searches=num_searches, temp=0.3
                 )
                 
                 # Map probabilities back to flat 169 action space
@@ -158,7 +158,6 @@ def train_config(
         # 3. Model Update
         if episode_states:
             model.train()
-            optimizer.zero_grad()
             
             batch_states = torch.cat(episode_states, dim=0)
             batch_actions = torch.tensor(episode_actions, dtype=torch.long)
@@ -196,16 +195,21 @@ def train_config(
                 batch_returns = torch.tensor(augmented_returns, dtype=torch.float32)
                 batch_heuristics = torch.tensor(np.array(augmented_heuristics), dtype=torch.float32)
             
-            logits, values = model(batch_states)
-            loss, rl_loss_val, kl_loss_val = loss_fn(
-                logits, batch_actions, batch_returns, batch_heuristics
-            )
-            
-            loss.backward()
-            optimizer.step()
+            avg_loss = 0.0
+            for _ in range(5):
+                optimizer.zero_grad()
+                logits, values = model(batch_states)
+                loss, rl_loss_val, kl_loss_val, val_loss_val = loss_fn(
+                    logits, values, batch_actions, batch_returns, batch_heuristics
+                )
+                loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+                optimizer.step()
+                avg_loss += loss.item()
+            avg_loss /= 5.0
             loss_fn.decay_beta()
             
-            loss_history.append(loss.item())
+            loss_history.append(avg_loss)
             beta_history.append(loss_fn.beta)
         else:
             loss_history.append(0.0)

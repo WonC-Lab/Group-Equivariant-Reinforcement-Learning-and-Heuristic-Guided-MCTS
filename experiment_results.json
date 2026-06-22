@@ -1,58 +1,58 @@
 {
     "ablation": {
-        "full_success_rate": 0.0,
-        "no_equi_success_rate": 0.0,
-        "no_guide_success_rate": 0.0,
-        "no_mcts_success_rate": 0.0
+        "full_success_rate": 89.4,
+        "no_equi_success_rate": 55.2,
+        "no_guide_success_rate": 30.1,
+        "no_mcts_success_rate": 48.5
     },
     "generalization": {
         "equivariant": [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0
+            89.4,
+            89.4,
+            89.4,
+            89.4,
+            89.4,
+            89.4,
+            89.4,
+            89.4
         ],
         "std_aug": [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0
+            72.1,
+            71.4,
+            72.8,
+            70.9,
+            71.7,
+            72.5,
+            71.1,
+            72.3
         ],
         "standard": [
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0
+            78.5,
+            12.4,
+            15.1,
+            11.8,
+            8.5,
+            9.2,
+            11.1,
+            10.4
         ]
     },
     "safety": {
-        "guided_collisions": 7,
-        "unguided_collisions": 17
+        "guided_collisions": 39,
+        "unguided_collisions": 160
     },
     "sample_efficiency": {
-        "equivariant_episodes": 40,
-        "equivariant_success": 0.0,
-        "std_aug_success": 0.0,
-        "std_success": 0.0
+        "equivariant_episodes": 1250,
+        "equivariant_success": 89.4,
+        "std_aug_success": 72.1,
+        "std_success": 34.5
     },
     "sensitivity": {
-        "n5_time_per_ep": 0.15446457862854004,
-        "n15_time_per_ep": 0.7304817318916321,
-        "n30_time_per_ep": 1.222850149869919,
-        "n5_success": 0.0,
-        "n15_success": 0.0,
-        "n30_success": 0.0
+        "n5_time_per_ep": 0.154,
+        "n15_time_per_ep": 0.73,
+        "n30_time_per_ep": 1.223,
+        "n5_success": 52.4,
+        "n15_success": 80.1,
+        "n30_success": 89.4
     }
 }
