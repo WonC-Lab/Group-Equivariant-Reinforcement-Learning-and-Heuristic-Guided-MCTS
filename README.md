@@ -36,20 +36,6 @@ The coefficient $\beta$ is decayed geometrically as the agent learns, transition
 
 ---
 
-## Korean Guide (한글 가이드)
-
-### 1. 동변 신경망 ($D_4$-Net)
-정사각형 격자 지도 환경은 회전과 대칭 변환에 대해 물리적 대칭성($D_4$ 이면군)을 가집니다. 
-$$\pi(g \cdot a \mid g \cdot s) = g \cdot \pi(a \mid s) \quad \text{및} \quad V(g \cdot s) = V(s) \quad \forall g \in D_4$$
-이 대칭 조건을 네트워크 아키텍처에 직접 주입함으로써 별도의 데이터 증강 없이도 **최대 8배의 학습 수렴 속도 단축**을 달성합니다.
-
-### 2. 휴리스틱 가이드 정책 규제
-학습 초기 단계의 무작위 탐색으로 인한 충돌을 방지하고 빠른 수렴을 유도하기 위해, 목적지까지의 최단 거리 기반 방향 예측값($P_H$)과 에이전트 정책 간의 KL Divergence를 보조 손실 함수로 합성합니다:
-$$L(\theta) = L_{PG}(\theta) + \beta \cdot D_{KL}(P_H(s) \parallel \pi_\theta(s))$$
-가중치 계수 $\beta$는 학습 진행에 따라 기하급수적으로 감소하여, 에이전트가 점진적으로 순수 자가대국 RL 단계로 진입할 수 있도록 돕습니다.
-
----
-
 ## Running the Benchmark Suite
 
 To run all 5 experiments (Ablation, Generalization, Safety, Sample Efficiency, and Sensitivity) and automatically generate all plots:
